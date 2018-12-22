@@ -43,9 +43,12 @@ normalizationFactors = {
 '32xlarge': 256
 }
 
+# Accurate as of December 2018
+# See https://aws.amazon.com/ec2/instance-types/ for up-to-date
+# types.
 validSizes = {
-  't2':  ['nano',  'micro',  'small',   'medium',  'large', '2xlarge'],
-  't3':  ['nano',  'micro',  'small',   'medium',  'large', '2xlarge'],
+  't2':  ['nano',  'micro',  'small',   'medium',  'large', 'xlarge', '2xlarge'],
+  't3':  ['nano',  'micro',  'small',   'medium',  'large', 'xlarge', '2xlarge'],
   'm4':  ['large', 'xlarge', '2xlarge', '4xlarge', '10xlarge'],
   'm5':  ['large', 'xlarge', '2xlarge', '4xlarge', '12xlarge', '24xlarge'],
   'm5a': ['large', 'xlarge', '2xlarge', '4xlarge', '12xlarge', '24xlarge'],
@@ -61,7 +64,7 @@ validSizes = {
 }
 
 # Retrieve our instances
-ec2 = Aws::EC2::Resource.new(region: 'us-west-2')
+ec2 = Aws::EC2::Resource.new(region: ARGV[0] || 'us-east-2')
       
 # Organize our instances
 instances = Hash.new
@@ -85,8 +88,6 @@ instances.keys.each do |k|
 	allocation[k] += normalizationFactors[i.to_sym].to_f
   end
 end
-
-puts instances
 
 # allocation now contains the number of 'small' instances
 # Generate a table of equivalence for the various sizes
